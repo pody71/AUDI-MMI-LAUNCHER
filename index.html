@@ -1,0 +1,116 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"><title>MMI</title>
+<style>
+:root{--ac:#38bdf8}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{height:100%;overflow:hidden;color:#e8eef8;font-family:system-ui,Roboto,sans-serif;background:radial-gradient(120% 90% at 50% 0,#14243f,#05070c 70%)}
+#app{display:grid;grid-template-columns:24% 1fr 31%;grid-template-rows:1fr auto;gap:2vh 1.4vw;height:100%;padding:2.4vh 1.4vw}
+.glass{background:linear-gradient(160deg,rgba(255,255,255,.11),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.12);border-radius:22px;box-shadow:0 12px 30px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.2)}
+.col{display:flex;flex-direction:column;gap:2vh;min-height:0}
+.card{padding:1.6vh 1.2vw}
+#clk{font-size:7vh;font-weight:700;letter-spacing:1px}#dt{opacity:.6;font-size:2.2vh;text-transform:capitalize}
+#wx{display:flex;align-items:center;gap:1vw;font-size:5vh}#wx small{font-size:2vh;opacity:.6;display:block}
+.mini{display:grid;grid-template-columns:1fr 1fr;gap:1.2vh}.mini div{background:rgba(0,0,0,.35);border-radius:14px;padding:1vh .6vw;text-align:center;box-shadow:inset 0 2px 6px rgba(0,0,0,.6)}
+.mini b{display:block;font-size:4vh;color:var(--ac)}.mini span{font-size:1.7vh;opacity:.6}
+#mid{align-items:center;justify-content:space-between}
+#leds{display:flex;gap:.35vw;width:92%}#leds i{flex:1;height:2.4vh;border-radius:5px;background:rgba(255,255,255,.1);transition:.12s}
+#leds i.on.g{background:#22c55e;box-shadow:0 0 10px #22c55e}#leds i.on.y{background:#facc15;box-shadow:0 0 10px #facc15}#leds i.on.r{background:#ef4444;box-shadow:0 0 12px #ef4444}
+#spd{font-size:15vh;font-weight:800;line-height:1;text-shadow:0 0 28px var(--ac);font-variant-numeric:tabular-nums}#kmh{opacity:.6;letter-spacing:4px;font-size:2.2vh}
+#carwrap{flex:1;width:100%;min-height:0;display:flex;align-items:center;justify-content:center;position:relative}
+#carwrap:after{content:"";position:absolute;bottom:4%;width:70%;height:9%;background:radial-gradient(closest-side,var(--ac),transparent);opacity:.35;filter:blur(8px)}
+#car{max-width:94%;max-height:100%;object-fit:contain;filter:drop-shadow(0 18px 18px rgba(0,0,0,.7));position:relative;z-index:1}
+#grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6vh 1vw;padding:1.6vh 1vw;overflow:auto;align-content:start;min-height:0;flex:1}
+.b3{position:relative;border:0;border-radius:20px;color:#fff;font:inherit;background:linear-gradient(180deg,#42536f 0%,#1d2a40 55%,#121a2b 100%);box-shadow:0 7px 0 #080d17,0 13px 20px rgba(0,0,0,.6),inset 0 2px 0 rgba(255,255,255,.38),inset 0 -3px 6px rgba(0,0,0,.45);transition:transform .07s,box-shadow .07s}
+.b3:active{transform:translateY(6px);box-shadow:0 1px 0 #080d17,0 3px 6px rgba(0,0,0,.6),inset 0 2px 0 rgba(255,255,255,.25)}
+.tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8vh;padding:1.4vh .3vw;aspect-ratio:1/.95}
+.ico{font-size:5.6vh;line-height:1;display:flex}.ico img{width:7vh;height:7vh;border-radius:16px}
+.lb{font-size:1.9vh;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.add .ico{color:var(--ac)}
+#bar{grid-column:1/4;display:flex;gap:1.2vw;align-items:center;padding:1.2vh 1.2vw}
+#bar .b3{padding:1.4vh 1.6vw;font-size:2.3vh;white-space:nowrap}#st{flex:1;text-align:right;font-size:1.9vh;opacity:.65}
+#ban{position:fixed;top:-12vh;left:50%;transform:translateX(-50%);background:#b91c1c;padding:1.6vh 3vw;border-radius:16px;font-size:3.2vh;font-weight:700;box-shadow:0 10px 30px #000;transition:top .3s;z-index:9}#ban.s{top:2vh}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:10}
+.modal .glass{background:#0e1626;width:min(86vw,900px);max-height:86vh;padding:2vh 1.6vw;display:flex;flex-direction:column;gap:1.6vh}
+.modal h3{font-size:2.8vh}.modal input{padding:1.4vh 1vw;border-radius:12px;border:1px solid #334;background:#05070c;color:#fff;font-size:2.4vh}
+#med{display:flex;align-items:center;gap:.8vw;width:92%;padding:1vh 1vw;border-radius:16px;background:rgba(0,0,0,.35);box-shadow:inset 0 2px 6px rgba(0,0,0,.6)}#med .b3{padding:.8vh 1.2vw;font-size:2.6vh;border-radius:14px}#mt{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:2.2vh}
+.pl{display:grid;grid-template-columns:repeat(5,1fr);gap:1.6vh 1vw;overflow:auto;padding:0 0 1vh}.sm{aspect-ratio:1/.9}.row{display:flex;gap:1vw}.row .b3{flex:1;padding:2vh;font-size:2.4vh}
+</style></head><body><div id="ban"></div>
+<div id="app">
+ <div class="col">
+  <div class="glass card"><div id="clk">--:--</div><div id="dt"></div></div>
+  <div class="glass card" id="wx"><span id="wi">⛅</span><div><span id="wt">--°</span><small id="wd">Tiempo</small></div></div>
+  <div class="glass card mini" style="flex:1;align-content:center"><div><b id="rpm">0</b><span>RPM</span></div><div><b id="tmp">0</b><span>MOTOR °C</span></div><div><b id="vol">--</b><span>BATERÍA V</span></div><div><b id="oil">·</b><span>ESTADO</span></div></div>
+ </div>
+ <div class="col glass card" id="mid">
+  <div id="leds"></div>
+  <div style="text-align:center"><div id="spd">0</div><div id="kmh">KM/H</div></div>
+  <div id="carwrap"><img id="car" alt=""></div>
+  <div id="med"><div id="mt">🎵 Música</div><button class="b3" data-m="prev">⏮</button><button class="b3" data-m="toggle">⏯</button><button class="b3" data-m="next">⏭</button></div>
+  <input type="file" id="file" accept="image/*" hidden>
+ </div>
+ <div class="glass" id="grid"></div>
+ <div class="glass" id="bar">
+  <button class="b3" id="bNav">🧭 Navegar</button><button class="b3" id="bMus">🎵 Música</button><button class="b3" id="bSp">⚡ Velocímetro</button><button class="b3" id="bCo">🎨 Color</button>
+  <div id="st">OBD sin datos</div>
+ </div>
+</div>
+<script>
+const A=window.Android,$=s=>document.querySelector(s),NAV=['com.google.android.apps.maps','com.waze'];
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const DEF=[{p:'com.google.android.apps.maps',l:'Maps',e:'🧭'},{p:'com.waze',l:'Waze',e:'🚙'},{p:'com.spotify.music',l:'Spotify',e:'🎵'},{p:'com.google.android.youtube',l:'YouTube',e:'▶️'},{p:'com.whatsapp',l:'WhatsApp',e:'💬'}];
+const BAS=[{p:'a:camera',l:'Cámara',e:'📷'},{p:'a:phone',l:'Teléfono',e:'📞'},{p:'a:bt',l:'Bluetooth',e:'🔵'},{p:'a:settings',l:'Ajustes',e:'⚙️'}];
+let tiles=JSON.parse(localStorage.tiles||'null')||DEF.concat(BAS),apps=[],ic={};
+if(!localStorage.v3){BAS.forEach(b=>{if(!tiles.some(t=>t.p==b.p))tiles.push(b)});localStorage.v3=1;localStorage.tiles=JSON.stringify(tiles)}
+const save=()=>{try{localStorage.tiles=JSON.stringify(tiles)}catch(e){}};
+const isNav=p=>NAV.includes(p)||p==localStorage.nav;
+const launch=p=>!A?banner('Solo funciona dentro de la APK'):p.startsWith('a:')?A.action(p.slice(2)):A.launch(p,isNav(p));
+// pulsación larga: fn tras 650 ms; tap = pulsación corta
+function lp(el,fn,tap,skip){let t,f=0;const s=e=>{if(skip&&e.target.closest(skip))return;f=0;t=setTimeout(()=>{f=1;fn(e)},650)},c=()=>clearTimeout(t);
+ el.addEventListener('touchstart',s,{passive:true});el.addEventListener('mousedown',s);['touchend','touchmove','mouseup','mouseleave'].forEach(n=>el.addEventListener(n,c));
+ el.addEventListener('click',e=>{if(f){f=0;e.stopPropagation();e.preventDefault();return}if(tap)tap(e)},true)}
+function sheet(h){const m=document.createElement('div');m.className='modal';m.innerHTML='<div class="glass">'+h+'</div>';m.addEventListener('click',e=>{if(e.target===m)m.remove()});document.body.appendChild(m);return m}
+function render(){const g=$('#grid');g.innerHTML='';tiles.forEach((t,i)=>{const b=document.createElement('button');b.className='b3 tile';
+ b.innerHTML=`<span class="ico">${ic[t.p]?`<img src="data:image/png;base64,${ic[t.p]}">`:(t.e||'📱')}</span><span class="lb">${esc(t.l)}</span>`;lp(b,()=>menu(i),()=>launch(t.p));g.appendChild(b)});
+ const a=document.createElement('button');a.className='b3 tile add';a.innerHTML='<span class="ico">＋</span><span class="lb">Añadir app</span>';a.onclick=()=>picker();g.appendChild(a)}
+function menu(i){const m=sheet(`<h3>${esc(tiles[i].l)}</h3><div class="row"><button class="b3" id="x1">🗑 Quitar</button><button class="b3" id="x2">＋ Añadir otra app</button></div>`);
+ m.querySelector('#x1').onclick=()=>{tiles.splice(i,1);save();render();m.remove()};m.querySelector('#x2').onclick=()=>{m.remove();picker()}}
+function picker(cb,title){if(typeof cb!='function')cb=a=>{if(!tiles.some(t=>t.p==a.p)){tiles.push({p:a.p,l:a.l});save();render()}};
+ const m=sheet('<h3>'+esc(title||'Añadir una app instalada')+'</h3><input id="q" placeholder="Buscar…"><div class="pl" id="pl"></div>');const pl=m.querySelector('#pl'),q=m.querySelector('#q');
+ const draw=()=>{pl.innerHTML='';apps.filter(a=>a.l.toLowerCase().includes(q.value.toLowerCase())).forEach(a=>{const b=document.createElement('button');b.className='b3 tile sm';
+  b.innerHTML=`<span class="ico"><img src="data:image/png;base64,${a.i}"></span><span class="lb">${esc(a.l)}</span>`;b.onclick=()=>{cb(a);m.remove()};pl.appendChild(b)})};
+ q.oninput=draw;draw();if(!apps.length)pl.textContent='La lista de apps solo está disponible en la APK'}
+lp($('#grid'),picker,null,'.tile');
+// coche personalizable
+const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 190"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e5ebf5"/><stop offset="1" stop-color="#56667f"/></linearGradient></defs><path d="M34 148Q42 96 118 80L150 46Q160 38 175 38H225Q240 38 250 46L282 80Q358 96 366 148Z" fill="url(#g)"/><path d="M128 80L156 52H244L272 80Z" fill="#0b1220"/><rect x="48" y="120" width="62" height="14" rx="7" fill="#fff"/><rect x="290" y="120" width="62" height="14" rx="7" fill="#fff"/><rect x="150" y="116" width="100" height="22" rx="6" fill="#0b1220"/><circle cx="92" cy="152" r="24" fill="#0b1220"/><circle cx="308" cy="152" r="24" fill="#0b1220"/></svg>`;
+const carDef='data:image/svg+xml;utf8,'+encodeURIComponent(svg);
+const setCar=()=>$('#car').src=localStorage.car||carDef;setCar();
+lp($('#carwrap'),()=>{const m=sheet('<h3>Imagen del coche</h3><div class="row"><button class="b3" id="c1">🖼 Elegir foto</button><button class="b3" id="c2">↺ Restaurar</button></div>');
+ m.querySelector('#c1').onclick=()=>{m.remove();$('#file').click()};m.querySelector('#c2').onclick=()=>{localStorage.removeItem('car');setCar();m.remove()}});
+$('#file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,900/im.width),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);try{localStorage.car=c.toDataURL('image/png')}catch(x){banner('Imagen demasiado grande')}setCar()};im.src=r.result};r.readAsDataURL(f);e.target.value=''};
+// LEDs RPM
+const L=$('#leds');for(let i=0;i<24;i++)L.appendChild(document.createElement('i'));
+const led=r=>{const n=Math.round(r/7000*24);[...L.children].forEach((e,i)=>e.className=i<n?'on '+(i<14?'g':i<19?'y':'r'):'')};
+// banner y alertas por voz
+let bt;function banner(t){const b=$('#ban');b.textContent=t;b.classList.add('s');clearTimeout(bt);bt=setTimeout(()=>b.classList.remove('s'),6000)}
+const last={};function once(k,msg){const n=Date.now();if(n-(last[k]||0)<90000)return;last[k]=n;banner('⚠ '+msg);A&&A.speak(msg)}
+window.onObd=(s,r,t,st,v,amb)=>{$('#spd').textContent=s;$('#rpm').textContent=r;$('#tmp').textContent=t;$('#vol').textContent=v;$('#st').textContent=st;$('#oil').textContent=st.includes('conectado')?'OK':'·';led(r);
+ if(t>105)once('t','Temperatura del motor alta');const vv=parseFloat(v);if(r>400&&vv&&vv<11.8)once('v','Batería baja');if(amb<=3&&amb>-40)once('i','Posible hielo en la carretera')};
+// reloj y tiempo
+setInterval(()=>{const d=new Date();$('#clk').textContent=d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});$('#dt').textContent=d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'})},1000);
+const wi=c=>c==0?'☀️':c<4?'⛅':c<50?'🌫':c<70?'🌧':c<80?'❄️':c<90?'🌦':'⛈';
+function wx(){navigator.geolocation&&navigator.geolocation.getCurrentPosition(p=>fetch(`https://api.open-meteo.com/v1/forecast?latitude=${p.coords.latitude}&longitude=${p.coords.longitude}&current=temperature_2m,weather_code&timezone=auto`).then(r=>r.json()).then(j=>{$('#wt').textContent=Math.round(j.current.temperature_2m)+'°';$('#wi').textContent=wi(j.current.weather_code);$('#wd').textContent='Tiempo actual'}).catch(()=>{}),()=>{$('#wd').textContent='Sin ubicación'})}
+wx();setInterval(wx,900000);
+// barra inferior
+const pickTo=(k,t)=>picker(a=>{localStorage[k]=a.p;banner('Guardado: '+a.l)},t);
+const setBtn=(id,k,t)=>lp($(id),()=>pickTo(k,t),()=>{const p=localStorage[k];p?launch(p):pickTo(k,t)});
+setBtn('#bNav','nav','Elige tu app de navegación o Android Auto');setBtn('#bMus','mus','Elige tu reproductor de música o Bluetooth');$('#bSp').onclick=()=>A?A.toggleOverlay():banner('Solo en la APK');
+const AC=['#38bdf8','#22c55e','#f43f5e','#f59e0b','#a78bfa','#e5e7eb'];let ai=Math.max(0,AC.indexOf(localStorage.ac));
+const setAc=()=>document.documentElement.style.setProperty('--ac',AC[ai]);setAc();$('#bCo').onclick=()=>{ai=(ai+1)%AC.length;localStorage.ac=AC[ai];setAc()};
+function auto(){if(localStorage.auto)return;localStorage.auto=1;[/radio/i,/bluetooth ?music|bt ?music|btmusic/i].forEach(re=>{const a=apps.find(x=>re.test(x.l)||re.test(x.p));if(a&&!tiles.some(t=>t.p==a.p))tiles.push({p:a.p,l:a.l})});save()}
+// control de música (reproductor Bluetooth del móvil)
+document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>A&&A.mediaCmd(b.dataset.m));
+$('#mt').onclick=()=>{if(A&&!A.mediaAccess())A.openNotifAccess()};
+setInterval(()=>{if(!A)return;if(!A.mediaAccess()){$('#mt').textContent='👆 Toca aquí para activar el control de música';return}
+ try{const i=JSON.parse(A.mediaInfo());$('#mt').textContent=i.t?`${i.pl?'▶':'⏸'} ${i.t}${i.a?' — '+i.a:''}`:'🎵 Sin título (los botones siguen funcionando)'}catch(e){}},2000);
+// apps instaladas reales (iconos de verdad)
+render();if(A)setTimeout(()=>{try{apps=JSON.parse(A.getApps()).sort((a,b)=>a.l.localeCompare(b.l));apps.forEach(a=>ic[a.p]=a.i);auto();render()}catch(e){}},300);
+</script></body></html>
