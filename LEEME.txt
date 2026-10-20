@@ -1,0 +1,5 @@
+1) Crea un repositorio en GitHub y sube TODO el contenido de esta carpeta (incluida .github).
+2) Pestaña Actions > "Build APK" > espera ~4 min > descarga el artefacto mmi-apk (app-debug.apk).
+3) Copia el APK a la Junsun e instalalo. Concede: superposicion, ubicacion y Bluetooth.
+4) Empareja el ELM327 en Ajustes > Bluetooth de la autoradio (PIN 1234 o 0000) ANTES de abrir la app.
+5) En la app: Libreria & Apps > "Velocimetro flotante ON / OFF".
